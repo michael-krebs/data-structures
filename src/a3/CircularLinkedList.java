@@ -1,5 +1,6 @@
 package a3;
 
+
 /** An instance is a circular doubly linked list. */
 public class CircularLinkedList<E> {
     private Node head; // a node of linked list (null if none)
@@ -21,14 +22,13 @@ public class CircularLinkedList<E> {
 
     /** Return the last node of the list (null if the list is empty). */
     public Node getLast() {
-        if (head == null)
-            return null;
+        if (head == null) return null;
         return head.pred;
     }
 
     /** If this circular list is empty, return null.
      *  Otherwise, move down the list in circular fashion, so that the
-     *  first node becomes the last node, the second becomes the first, ec. */
+     *  first node becomes the last node, the second becomes the first, etc. */
     public Node moveDown() {
         if (head != null) {
             head = head.succ;
@@ -39,7 +39,9 @@ public class CircularLinkedList<E> {
     /** Return the value of node e of this list.
      * Precondition: e must be a node of this list; it may not be null. */
     public E valueOf(Node e) {
-        assert e != null;
+        if (e == null) {
+        	return null;
+        }
         return e.value;
     }
 
@@ -48,13 +50,25 @@ public class CircularLinkedList<E> {
      * 
      * E.g. for the list containing 6 3 8 in that order, the result it "[6, 3, 8]". */
     public String toString() {
-        /* Note: This method should NOT refer to field size. It refers to
-         * field head and all the succ fields of the nodes. Reason: It allows
-         * toString to be used in testing head and all the succ fields. */
-
-        // Write this method and delete this comment
-    	
-        return null;
+		String str = "[";
+		if (size == 0) {
+			// do nothing
+		} else if (size == 1) {
+			str += Integer.toString((int) head.getValue());
+		} else {
+			Node current = head;
+			str += Integer.toString((int) head.getValue()) + ", ";
+			while (current.successor() != head) {
+				current = current.successor();
+				if (current.successor() == head) {
+					str += Integer.toString((int) current.getValue());
+				} else {
+					str += Integer.toString((int)current.getValue()) + ", ";
+				}
+			}	
+		}
+		str += "]";
+		return str;
     }
 
     /** Return a representation of this list: its values in reverse, with adjacent
@@ -62,12 +76,26 @@ public class CircularLinkedList<E> {
      * 
      * E.g. for the list containing 6 3 8 in that order, the result it "[8, 3, 6]".*/
     public String toStringReverse() {
-        /* Note: This method should NOT refer to field size. It refers to
-         * field head and all the pred fields of the nodes. Reason: It allows
-         * toStringReverse to be used in testing head and all the pred fields. */
-
-        // Write this method and delete this comment
-        return null;
+		String str = "[";
+		
+		if (size == 0) {
+			// do nothing
+		} else if (size == 1) {
+			str += Integer.toString((int) head.getValue());
+		} else {
+			Node current = head.predecessor();
+			str += Integer.toString((int) current.getValue()) + ", ";
+			while (current.predecessor() != head.predecessor()) {
+				current = current.predecessor();
+				if (current.predecessor() == head.predecessor()) {
+					str += Integer.toString((int) current.getValue());
+				} else {
+					str += Integer.toString((int)current.getValue()) + ", ";
+				}
+			}	
+		}
+		str += "]";
+		return str;
     }
 
     /** Append value v to the list. */
@@ -75,8 +103,16 @@ public class CircularLinkedList<E> {
         /* Note: this method views the list as a list with a first and
          * a last value. It adds a new value at the end, not changing any
          * others. */
-
-        // Write this method and delete this comment
+    	if (size == 0) {
+    		head = new Node(null, v, null);
+    		head.setPredecessor(head);
+    		head.setSuccessor(head);
+    	} else {
+    		Node current = head.predecessor();
+    		Node newNode = new Node(current, v, head);
+    		head.setPredecessor(newNode);
+    		current.setSuccessor(newNode);
+    	}
     	size++;
     }
 
@@ -119,14 +155,25 @@ public class CircularLinkedList<E> {
         assert e != null;
         /* Note: if the head (first) node is being removed and size >= 2, head
          * should end up pointing at head's successor. */
-
-        // Write this method and delete this comment
+        Node current = head;
+        if (size == 1) {
+        	head = null;
+        } else if (size == 2) {
+        	if (head == e) {
+        		head = head.successor();
+        	}
+    		head.setPredecessor(head);
+    		head.setSuccessor(head);
+        } else {
+            while (current != e) {
+            	moveDown();
+            }
+            Node temp = current.predecessor();
+	        current.successor().setPredecessor(temp);
+	        temp.setSuccessor(current.successor());
+        }
         size--;
-    } 
-
-
-
-    /*********************/
+    }
 
     /** An instance is a node of this list. */
     public class Node {
@@ -144,7 +191,7 @@ public class CircularLinkedList<E> {
          * successor s (s can be null), and value v. */
         private Node(Node p, E v, Node s) {
             pred= p;
-            value= v;
+            value = v;
             succ= s;
         }
 
@@ -152,16 +199,24 @@ public class CircularLinkedList<E> {
         public E getValue() {
             return value;
         }
+        
+        public void setPredecessor(Node n) {
+        	pred = n;
+        }
 
         /** Return the predecessor of this node e in the list. */
         public Node predecessor() {
             return pred;
         }
-
+        
+        public void setSuccessor(Node n) {
+        	succ = n;
+        }
         /** Return the successor of this node in this list. */
         public Node successor() {
             return succ;
         }
+        
     }
 
 }
