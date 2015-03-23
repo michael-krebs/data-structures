@@ -121,10 +121,15 @@ public class CircularLinkedList<E> {
         /* Note: this method views the list as a list with a first and
          * a last value. It adds a new value at the beginning, so head
          * should end up pointing to the new node. */
-        // Write this method and delete this comment
-    	head.succ = new Node(head, v, head.succ);
-    	size++;
-    	
+    	if (size == 0) {
+    		append(v);
+    	} else {
+	    	Node temp = head;
+	    	head = new Node(temp.pred, v, temp);
+	    	head.pred.succ = head;
+	    	temp.pred = head;
+	    	size++;
+    	}
     }
 
     /** Insert value v in a new node before node e of this circular list.
@@ -133,8 +138,20 @@ public class CircularLinkedList<E> {
         /* Note: This method views the list as a circular list, so it doesn't
          * really matter which node head points to when the method is done.
          * However, we require that head does not change. */
-
-        // Write this method and delete this comment
+    	if (size == 1) {
+    		Node newNode = new Node(head, v, head);
+    		head.succ = newNode;
+    		head.pred = newNode;
+    	} else {
+    		Node current = head;
+    		while (current.succ != e) {
+    			current = current.succ;
+    		}
+    		Node temp = e.pred;
+    		Node newNode = new Node(e.pred, v, e);
+    		temp.succ = newNode;
+    		e.pred = newNode;
+    	}
     	size++;
     }
 
@@ -144,8 +161,20 @@ public class CircularLinkedList<E> {
         /* Note: This method views the list as a circular list, so it doesn't
          * really matter which node head points to when the method is done.
          * However, we require that head does not change. */
-
-        // Write this method and delete this comment
+    	if (size == 1) {
+    		Node newNode = new Node(head, v, head);
+    		head.succ = newNode;
+    		head.pred = newNode;
+    	} else {
+    		Node current = head;
+    		while (current.pred != e) {
+    			current = current.succ;
+    		}
+    		Node temp = e.succ;
+    		Node newNode = new Node(e, v, e.succ);
+    		temp.pred = newNode;
+    		e.succ = newNode;
+    	}
     	size++;
     }
 
@@ -153,8 +182,7 @@ public class CircularLinkedList<E> {
      *  Precondition: e must be a node of this list, i.e. it may not be null. */
     public void remove(Node e) {
         assert e != null;
-        /* Note: if the head (first) node is being removed and size >= 2, head
-         * should end up pointing at head's successor. */
+
         Node current = head;
         if (size == 1) {
         	head = null;
@@ -165,8 +193,11 @@ public class CircularLinkedList<E> {
     		head.setPredecessor(head);
     		head.setSuccessor(head);
         } else {
+        	if (head == e) {
+        		head = head.successor();
+        	}
             while (current != e) {
-            	moveDown();
+            	current = current.successor();
             }
             Node temp = current.predecessor();
 	        current.successor().setPredecessor(temp);

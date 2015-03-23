@@ -21,20 +21,27 @@ public class Test {
 		System.out.println(lst.toString());
 		System.out.println(lst.toStringReverse());
 		lst.append(1);
+		lst.insertBefore(20, lst.getFirst());
 		System.out.println(lst.toString());
 		System.out.println(lst.toStringReverse());
 		lst.append(2);
 		System.out.println(lst.toString());
 		System.out.println(lst.toStringReverse());
-		lst.append(3);
+		lst.prepend(3);
+		lst.prepend(4);
+		lst.insertBefore(30, lst.getFirst());
 		System.out.println(lst.toString());
 		System.out.println(lst.toStringReverse());
-		lst.remove(lst.getFirst());
-		System.out.println("I never make it here!");
-		
-		
+		lst.append(7);
 		System.out.println(lst.toString());
-		System.out.println("I never make it here?");
+		lst.remove(lst.getFirst());		
+		System.out.println(lst.toString());
+		lst.remove(lst.getFirst());
+		System.out.println(lst.toString());
+		lst.insertAfter(89, lst.getFirst());
+		System.out.println(lst.toString());
+		lst.remove(lst.getFirst());
+		System.out.println(lst.toString());
 		lst.remove(lst.getFirst());
 		System.out.println(lst.toString());
 	}
